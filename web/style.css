@@ -1,0 +1,20 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Lato', sans-serif;
+}
+
+#select-speed {
+    width: auto;
+}
+
+.btn {
+    float: none;
+}
+
+.file-selector .btn {
+    height: 36px;
+    line-height: 36px;
+    position: relative;
+    float: none;
+}
