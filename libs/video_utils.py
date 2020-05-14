@@ -1,4 +1,5 @@
 from tkinter import Tk, messagebox
+from libs.logger import logging as log
 from tkinter.ttk import Label, Progressbar, Button
 import numpy as np
 import cv2
@@ -39,10 +40,12 @@ def bulk_validate_video(video_path_tuple: tuple):
     Returns:
         boolean: True if all videos are valid, False if any one fails the check
     """
+    log.info(f"Validating on {len(video_path_tuple)} file(s).")
     for video_path in video_path_tuple:
         valid = validate_video(video_path)
 
         if not valid:
+            log.info(f"Validation Failed for the file: {video_path}")
             return False
 
     return True
@@ -186,6 +189,9 @@ def bulk_video_converter(
         boolean: True if all conversions are successful, else False
     """
 
+    log.info(
+        f"Conversion Started for {len(video_path_tuple)} Video(s)"
+    )
     # Iterate over each video sequentially
     for i, video_path in enumerate(video_path_tuple):
 
@@ -197,6 +203,9 @@ def bulk_video_converter(
 
         # Attempt to convert the video and update GUI elements if available
         try:
+            log.info(
+                f"Conversion Started for the Video: {video_path}, Speed Multiplier: {fps_multiplier}"
+            )
             if tkinter_progressbar_object and tkinter_root_tk_object:
                 video_converter(
                     video_path,
@@ -209,9 +218,15 @@ def bulk_video_converter(
             else:
                 video_converter(video_path, fps_multiplier, dest_path)
 
+            log.info(
+                f"Conversion Completed for the Video: {video_path}"
+            )
+
         except Exception as e:
             # If converstion fails, raise error
-            print(f"Error Converting Video: {e}")
+            log.error(
+                f"Conversion ERROR for the Video: {video_path}, Speed Multiplier: {fps_multiplier}, Error: {e}"
+            )
             messagebox.showerror(
                 title="Failed!",
                 message="One or more videos have failed conversion"
@@ -219,6 +234,9 @@ def bulk_video_converter(
             tkinter_convert_button["state"] = "normal"
             return False
 
+    log.info(
+        f"Conversion Completed for all {len(video_path_tuple)} Video(s)"
+    )
     # Upon successful conversion, notify the user
     messagebox.showinfo(
         title="Success!",

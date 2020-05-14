@@ -1,6 +1,7 @@
 from tkinter import Tk, Label, NE, Frame, LabelFrame, W, E, N, S, HORIZONTAL, StringVar, filedialog, messagebox, PhotoImage
 from tkinter.ttk import Progressbar, Button, OptionMenu, Label
-from video_utils import bulk_validate_video, bulk_video_converter
+from libs.video_utils import bulk_validate_video, bulk_video_converter
+from libs.logger import logging as log
 import os
 import time
 import _thread
@@ -195,13 +196,26 @@ class TimelapseGUI():
 
         # Check file validity
         valid = bulk_validate_video(self.files)
-        if not valid:
+
+        if valid:
+            log.info(
+                f"{len(self.files)} valid file(s) have been loaded successfully"
+            )
+
+            messagebox.showinfo(
+                title="File(s) Loaded",
+                message=f"All the {len(self.files)} file(s) are valid and have been loaded successfully"
+            )
+            return True
+        else:
+            log.warning(
+                f"File validity check failed for one or more of the following files: {self.files}"
+            )
             messagebox.showerror(
                 title="Invalid File",
                 message="The File that you entered is invalid. Please retry!"
             )
-            return False
-        return True
+            return True
 
     def convert_video(self):
         """
